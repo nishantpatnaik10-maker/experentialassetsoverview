@@ -1,10 +1,21 @@
 // Engagements Calendar Data
 // Auto-synced from EXP26 Dashboard
-// Last updated: 2026-06-24T10:06:13.840Z
+// Last updated: 2026-06-24T10:08:30.996Z
 
 const ENGAGEMENTS_STORAGE_KEY = "exp26_engagements";
 
-const INITIAL_ENGAGEMENTS = [];
+const INITIAL_ENGAGEMENTS = [
+  {
+    "title": "Booking.com",
+    "date": "2026-06-23",
+    "endDate": "2026-06-23",
+    "gameboard": "Gameboard 1",
+    "type": "Workshop",
+    "attendees": "Nandana, Katharina",
+    "notes": "",
+    "id": "eng-1782295704714"
+  }
+];
 
 const ENGAGEMENT_TYPES = [
   "Workshop",
