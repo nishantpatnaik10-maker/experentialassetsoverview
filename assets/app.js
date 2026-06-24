@@ -277,11 +277,12 @@ function setupCalendarControls() {
     const btn = document.getElementById('btn-gh-sync');
     const status = document.getElementById('sync-status');
     btn.disabled = true;
-    await syncEngagementsToGitHub(calState.engagements, msg => {
+    status.textContent = '';
+    const ok = await syncEngagementsToGitHub(calState.engagements, msg => {
       status.textContent = msg;
     });
     btn.disabled = false;
-    setTimeout(() => { status.textContent = ''; }, 4000);
+    if (ok) setTimeout(() => { status.textContent = ''; }, 6000);
   });
 
   // GitHub Settings modal
