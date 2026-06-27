@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Demo Hub</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #f0f2f5;
+      color: #1a1a2e;
+      min-height: 100vh;
+    }
+
+    header {
+      background: linear-gradient(135deg, #0d1b2a 0%, #1b3a5c 100%);
+      color: #fff;
+      padding: 28px 40px 20px;
+    }
+
+    header h1 {
+      font-size: 1.9rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    header p {
+      margin-top: 6px;
+      font-size: 0.9rem;
+      color: #a8c8e8;
+    }
+
+    /* ── Tab bar ── */
+    .tab-bar {
+      display: flex;
+      background: #0d1b2a;
+      padding: 0 40px;
+      gap: 4px;
+      border-bottom: 3px solid #00a8e8;
+    }
+
+    .tab-btn {
+      padding: 14px 24px;
+      background: transparent;
+      border: none;
+      color: #a8c8e8;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -3px;
+      transition: color 0.2s, border-color 0.2s;
+      white-space: nowrap;
+    }
+
+    .tab-btn:hover { color: #fff; }
+
+    .tab-btn.active {
+      color: #00a8e8;
+      border-bottom-color: #00a8e8;
+    }
+
+    /* ── Content ── */
+    .tab-content { display: none; padding: 24px 40px; max-width: 960px; margin: 0 auto; }
+    .tab-content.active { display: block; }
+
+    /* ── Cards ── */
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+    }
+
+    .card h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #0d1b2a;
+      margin-bottom: 12px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #e8f4fd;
+    }
+
+    /* ── Numbered list ── */
+    .point-list { list-style: none; counter-reset: pts; }
+
+    .point-list > li {
+      counter-increment: pts;
+      display: flex;
+      gap: 16px;
+      padding: 10px 0;
+      border-bottom: 1px solid #f0f4f8;
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    .point-list > li:last-child { border-bottom: none; }
+
+    .point-list > li::before {
+      content: counter(pts);
+      min-width: 28px;
+      height: 28px;
+      background: #00a8e8;
+      color: #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: 700;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    /* ── Expandable more info ── */
+    .more-toggle {
+      display: inline-block;
+      margin-top: 6px;
+      font-size: 0.82rem;
+      color: #00a8e8;
+      cursor: pointer;
+      text-decoration: underline;
+      user-select: none;
+    }
+
+    .more-body {
+      display: none;
+      margin-top: 8px;
+      padding: 10px 14px;
+      background: #f0f8ff;
+      border-left: 3px solid #00a8e8;
+      border-radius: 0 6px 6px 0;
+      font-size: 0.88rem;
+      color: #3a5068;
+      line-height: 1.6;
+    }
+
+    .more-body.open { display: block; }
+
+    /* ── Steps ── */
+    .steps { list-style: none; counter-reset: steps; }
+
+    .steps li {
+      counter-increment: steps;
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      padding: 14px 0;
+      border-bottom: 1px solid #f0f4f8;
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    .steps li:last-child { border-bottom: none; }
+
+    .steps li::before {
+      content: counter(steps);
+      min-width: 30px;
+      height: 30px;
+      background: #1b3a5c;
+      color: #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    /* ── Field table inside steps ── */
+    .field-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+      font-size: 0.9rem;
+    }
+
+    .field-table th {
+      background: #e8f4fd;
+      padding: 9px 14px;
+      text-align: left;
+      font-weight: 600;
+      color: #1b3a5c;
+    }
+
+    .field-table td {
+      padding: 9px 14px;
+      border-bottom: 1px solid #f0f4f8;
+      color: #2a4060;
+    }
+
+    .field-table tr:last-child td { border-bottom: none; }
+
+    /* ── Link button ── */
+    .btn-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #00a8e8;
+      color: #fff;
+      padding: 11px 22px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: background 0.2s, transform 0.1s;
+      margin-top: 4px;
+    }
+
+    .btn-link:hover { background: #0090cc; transform: translateY(-1px); }
+    .btn-link.outline {
+      background: transparent;
+      border: 2px solid #00a8e8;
+      color: #00a8e8;
+    }
+    .btn-link.outline:hover { background: #e8f8ff; transform: translateY(-1px); }
+
+    .link-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    /* ── Video ── */
+    .video-wrapper {
+      margin-top: 16px;
+      border-radius: 10px;
+      overflow: hidden;
+      background: #000;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    }
+
+    .video-wrapper video {
+      width: 100%;
+      display: block;
+      max-height: 480px;
+    }
+
+    .video-label {
+      font-size: 0.88rem;
+      color: #6b8099;
+      margin-top: 8px;
+    }
+
+    /* ── Badge ── */
+    .badge {
+      display: inline-block;
+      background: #e8f4fd;
+      color: #1b3a5c;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      margin-left: 8px;
+      vertical-align: middle;
+    }
+
+    /* ── Note banner ── */
+    .note {
+      background: #fff8e1;
+      border-left: 4px solid #f5a623;
+      border-radius: 0 8px 8px 0;
+      padding: 12px 16px;
+      font-size: 0.88rem;
+      color: #5a4000;
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Demo Hub</h1>
+  <p>Experience assets, guided walkthroughs, and reference links</p>
+</header>
+
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab('overview', this)">Overview</button>
+  <button class="tab-btn" onclick="switchTab('naa', this)">National Archives of Australia</button>
+  <button class="tab-btn" onclick="switchTab('telstra', this)">Telstra DCM</button>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 1 — OVERVIEW
+════════════════════════════════════════════ -->
+<div id="overview" class="tab-content active">
+
+  <div class="card">
+    <h2>Key Points to Consider</h2>
+    <ul class="point-list">
+      <li>
+        <div>
+          These assets are only compatible with Platform. Compatibility with apps such as CS, PGP etc. is on the roadmap.
+        </div>
+      </li>
+      <li>
+        <div>
+          Blueprint automations in the DemoX library can sometimes become outdated due to the biweekly releases from the Blueprint team.
+        </div>
+      </li>
+      <li>
+        <div>
+          This is not a fully built-out application — only a percentage of the app has been developed to allow end-to-end execution for individual case types.
+        </div>
+      </li>
+      <li>
+        <div>
+          These assets are deployed on sandbox environments, so there may be latency issues.
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>Lessons Learnt</h2>
+    <ul class="point-list">
+      <li>
+        <div>
+          <strong>If part of a presentation</strong> — Allow more than an hour if a Blueprint demo is also on the agenda.
+          <span class="more-toggle" onclick="toggleMore(this)">More info ▾</span>
+          <div class="more-body">
+            The demo consists of two parts: ideation and the actual software with the omni-channel experience. There is an overlap between a few feature functions, so sufficient time must be allocated to cover both parts effectively.
+          </div>
+        </div>
+      </li>
+      <li>
+        <div>
+          <strong>If used as a leave-behind</strong> — Book an hour of guided walkthrough with participants.
+          <span class="more-toggle" onclick="toggleMore(this)">More info ▾</span>
+          <div class="more-body">
+            This ensures participants are familiar with the navigation and know where to click. This session is best conducted in person, with the SC and DemoX team facilitating together.
+          </div>
+        </div>
+      </li>
+      <li>
+        <div>
+          <strong>Preparation is key</strong> — Factor in time to prepare before the demo.
+          <span class="more-toggle" onclick="toggleMore(this)">More info ▾</span>
+          <div class="more-body">
+            Transitions and handovers between presenters are important. If you are adding feature functions on top of the Blueprint, both development time and preparation time must be factored into your planning.
+          </div>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 2 — NATIONAL ARCHIVES OF AUSTRALIA
+════════════════════════════════════════════ -->
+<div id="naa" class="tab-content">
+
+  <div class="card">
+    <h2>Overview</h2>
+    <p style="font-size:0.93rem; color:#3a5068; line-height:1.6;">
+      The experiential assets were presented as part of the initial product capability presentation.
+    </p>
+  </div>
+
+  <div class="card">
+    <h2>Web Shell Application</h2>
+    <p style="font-size:0.93rem; color:#3a5068; margin-bottom:16px;">
+      Use the link below to open the Web Shell app and interact with the AI agent.
+    </p>
+    <a class="btn-link" href="https://testdrive-bhonk.pegademo.com/web-shell/" target="_blank" rel="noopener">
+      &#x1F517; Open Web Shell App
+    </a>
+  </div>
+
+  <div class="card">
+    <h2>Steps to Interact with the Agent</h2>
+    <ul class="steps">
+      <li>
+        <div>
+          To start the case, type: <strong>"Submit a new change request"</strong>
+        </div>
+      </li>
+      <li>
+        <div>
+          Enter the following details when prompted:
+          <table class="field-table">
+            <thead>
+              <tr>
+                <th>Field</th>
+                <th>Value</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Change Name</td>
+                <td>Critical Database Vulnerability Patch</td>
+              </tr>
+              <tr>
+                <td>Change Type</td>
+                <td>Emergency</td>
+              </tr>
+              <tr>
+                <td>Change Category</td>
+                <td>Security</td>
+              </tr>
+              <tr>
+                <td>Asset</td>
+                <td>Dell UltraSharp U2721DE Monitor</td>
+              </tr>
+              <tr>
+                <td>Deployment Date</td>
+                <td>23/06/2026</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </li>
+    </ul>
+    <div class="link-row">
+      <a class="btn-link outline" href="https://www.pega.com/blueprint/BP-2035221/summary" target="_blank" rel="noopener">
+        &#x1F4CB; View Blueprint
+      </a>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 3 — TELSTRA DCM
+════════════════════════════════════════════ -->
+<div id="telstra" class="tab-content">
+
+  <div class="card">
+    <h2>Overview</h2>
+    <ul class="point-list">
+      <li><div>Discovery / Walkthrough</div></li>
+      <li><div>Blueprint Workshop</div></li>
+      <li>
+        <div>
+          Provisioning of the Web Shell and configuring the following <span class="badge">1 week after Blueprint workshop</span>
+          <ul style="list-style:none; margin-top:10px; display:flex; flex-direction:column; gap:8px;">
+            <li style="display:flex; align-items:flex-start; gap:10px;">
+              <span style="min-width:24px; height:24px; background:#e8f4fd; color:#1b3a5c; border-radius:4px; display:flex; align-items:center; justify-content:center; font-size:0.78rem; font-weight:700; flex-shrink:0;">a</span>
+              <span>Mock APIs <span style="color:#6b8099;">(using Claude and Onrender.com)</span></span>
+            </li>
+            <li style="display:flex; align-items:flex-start; gap:10px;">
+              <span style="min-width:24px; height:24px; background:#e8f4fd; color:#1b3a5c; border-radius:4px; display:flex; align-items:center; justify-content:center; font-size:0.78rem; font-weight:700; flex-shrink:0;">b</span>
+              <span>Gen AI Connect capabilities — Document Analysis</span>
+            </li>
+            <li style="display:flex; align-items:flex-start; gap:10px;">
+              <span style="min-width:24px; height:24px; background:#e8f4fd; color:#1b3a5c; border-radius:4px; display:flex; align-items:center; justify-content:center; font-size:0.78rem; font-weight:700; flex-shrink:0;">c</span>
+              <span>Step Level Agent</span>
+            </li>
+          </ul>
+        </div>
+      </li>
+      <li>
+        <div>
+          Exec Presentation <span class="badge">2 weeks after Blueprint workshop</span>
+          <ul style="list-style:none; margin-top:10px; display:flex; flex-direction:column; gap:8px;">
+            <li style="display:flex; align-items:flex-start; gap:10px;">
+              <span style="min-width:24px; height:24px; background:#e8f4fd; color:#1b3a5c; border-radius:4px; display:flex; align-items:center; justify-content:center; font-size:0.78rem; font-weight:700; flex-shrink:0;">a</span>
+              <span>Dry runs internally and with coaches from Telstra</span>
+            </li>
+            <li style="display:flex; align-items:flex-start; gap:10px;">
+              <span style="min-width:24px; height:24px; background:#e8f4fd; color:#1b3a5c; border-radius:4px; display:flex; align-items:center; justify-content:center; font-size:0.78rem; font-weight:700; flex-shrink:0;">b</span>
+              <span>Presentation highlights — no token cost, pitching ourselves as partners and not vendors, and cost of Pega vs different patterns of agentic implementation provided by Matthias</span>
+            </li>
+          </ul>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>Reference Links</h2>
+    <div class="link-row">
+      <a class="btn-link" href="https://www.pega.com/blueprint/BPAU-103050/summary" target="_blank" rel="noopener">
+        &#x1F4CB; Blueprint
+      </a>
+      <a class="btn-link outline" href="https://nishantpatnaik10-maker.github.io/telstra-dcm-overview/" target="_blank" rel="noopener">
+        &#x2728; Added Feature Functions
+      </a>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Recordings</h2>
+    <div class="note">
+      Videos are embedded directly from this repository. For best playback, use a modern browser (Chrome, Edge, Firefox, or Safari).
+    </div>
+
+    <p style="font-size:0.9rem; font-weight:600; color:#1b3a5c; margin-bottom:8px;">
+      1. Walkthrough — Web Shell App
+    </p>
+    <div class="video-wrapper">
+      <video controls preload="metadata">
+        <source src="Recordings/WebShell.mp4" type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+    </div>
+
+    <p style="font-size:0.9rem; font-weight:600; color:#1b3a5c; margin-top:24px; margin-bottom:8px;">
+      2. Walkthrough — Pega Case &amp; Widgets Embedded in Salesforce
+    </p>
+    <div class="video-wrapper">
+      <video controls preload="metadata">
+        <source src="Recordings/SF_Integration.mp4" type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  function switchTab(id, btn) {
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    btn.classList.add('active');
+  }
+
+  function toggleMore(el) {
+    const body = el.nextElementSibling;
+    const open = body.classList.toggle('open');
+    el.textContent = open ? 'Less info ▴' : 'More info ▾';
+  }
+</script>
+
+</body>
+</html>
