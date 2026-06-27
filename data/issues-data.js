@@ -1,5 +1,5 @@
 // ISSUES / KANBAN DATA FILE
-// Auto-updated by Sync to GitHub on 2026-06-24T11:31:41.536Z
+// Auto-updated by Sync to GitHub on 2026-06-27T22:47:50.077Z
 // Do not edit manually — use the dashboard.
 
 const INITIAL_ISSUES = [
@@ -19,14 +19,14 @@ const INITIAL_ISSUES = [
     "description": "Org field on the game boards to be changed from a lookup to a free text",
     "priority": "Medium",
     "category": "UI/UX",
-    "status": "inprogress",
+    "status": "resolved",
     "assignee": "Wojciech",
     "gameboard": "",
     "id": "issue-1782299735510",
     "createdAt": "2026-06-24T11:15:35.510Z",
-    "updatedAt": "2026-06-24T11:31:36.709Z",
+    "updatedAt": "2026-06-27T22:47:37.908Z",
     "comments": "Wojciech working on it",
-    "resolution": ""
+    "resolution": "1. Organization field suggests values, but it also accepts new values (that if played with this player will be added to the Org list for next games)\n2. Reviewing and editing from gameboard portal -> Configuration -> Organizations\nhere you can only edit.\nTo remove (all only) just run Cleanup case and select Players/Teams\nTo add orgs run Import Orgs case\nThis should be just a list of org names, new lines or comma delimited"
   },
   {
     "title": "Upgrade to 26.1 GA",
