@@ -1,0 +1,1176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Telstra Device Care & Warranty – Case Lifecycle Architecture</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --telstra-purple: #5C0FAE;
+      --telstra-teal: #00B2A9;
+      --pega-blue: #0073CF;
+      --pega-dark: #001135;
+      --stage-header: #2d3748;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: #eef0f5;
+      min-height: 100vh;
+    }
+
+    /* ── HEADER ─────────────────────────────────── */
+    header {
+      background: linear-gradient(135deg, #3d0091 0%, var(--telstra-purple) 45%, var(--pega-dark) 100%);
+      box-shadow: 0 4px 24px rgba(0,0,0,0.35);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 32px;
+      max-width: 1700px;
+      margin: 0 auto;
+    }
+
+    /* Telstra logo block */
+    .telstra-logo-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .telstra-t {
+      width: 44px; height: 44px;
+      background: white;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 900; font-size: 26px;
+      color: var(--telstra-purple);
+      font-family: Arial, sans-serif;
+      letter-spacing: -2px;
+      line-height: 1;
+    }
+    .telstra-wordmark {
+      color: white;
+      font-weight: 700;
+      font-size: 20px;
+      letter-spacing: 1px;
+      line-height: 1;
+    }
+    .telstra-tagline {
+      color: rgba(255,255,255,0.55);
+      font-size: 10px;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+    }
+
+    /* Pega logo block */
+    .pega-logo-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .pega-box {
+      background: white;
+      border-radius: 6px;
+      padding: 5px 12px;
+      display: flex; align-items: center;
+    }
+    .pega-text {
+      font-weight: 900;
+      font-size: 20px;
+      letter-spacing: 2px;
+      color: var(--pega-blue);
+      font-family: Arial, sans-serif;
+    }
+    .pega-powered {
+      color: rgba(255,255,255,0.55);
+      font-size: 10px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      text-align: right;
+    }
+
+    .header-center {
+      text-align: center;
+      color: white;
+    }
+    .header-center h1 {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+    }
+    .header-center p {
+      font-size: 11px;
+      opacity: 0.6;
+      margin-top: 3px;
+      letter-spacing: 0.5px;
+    }
+
+    /* Legend sub-bar */
+    .subheader {
+      background: rgba(0,0,0,0.22);
+      border-top: 1px solid rgba(255,255,255,0.08);
+      padding: 7px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .legend-item {
+      display: flex; align-items: center; gap: 6px;
+      color: rgba(255,255,255,0.8);
+      font-size: 11px;
+    }
+    .legend-dot {
+      width: 10px; height: 10px;
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+    .sep { color: rgba(255,255,255,0.2); font-size: 18px; }
+
+    /* ── MAIN ────────────────────────────────────── */
+    main {
+      padding: 22px 28px 40px;
+      max-width: 1700px;
+      margin: 0 auto;
+    }
+
+    /* ── SUMMARY CARDS ───────────────────────────── */
+    .summary-row {
+      display: flex;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+    .icard {
+      flex: 1;
+      background: white;
+      border-radius: 12px;
+      padding: 16px 18px;
+      border-left: 5px solid;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+      position: relative;
+      overflow: hidden;
+    }
+    .icard::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: inherit;
+      opacity: 0;
+      transition: opacity 0.15s;
+    }
+    .icard:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.14);
+    }
+    .icard.rims-card   { border-color: #d97706; }
+    .icard.amta-card   { border-color: #dc2626; }
+    .icard.pega-card   { border-color: #7c3aed; }
+    .icard.genai-card  { border-color: #0891b2; }
+
+    .icard-label {
+      font-size: 10px; font-weight: 800;
+      text-transform: uppercase; letter-spacing: 1.2px;
+      margin-bottom: 5px;
+    }
+    .rims-card .icard-label   { color: #d97706; }
+    .amta-card .icard-label   { color: #dc2626; }
+    .pega-card .icard-label   { color: #7c3aed; }
+    .genai-card .icard-label  { color: #0891b2; }
+
+    .icard-title {
+      font-size: 15px; font-weight: 700;
+      color: #111827; margin-bottom: 3px;
+    }
+    .icard-sub  { font-size: 12px; color: #6b7280; line-height: 1.5; }
+    .icard-stage {
+      display: inline-block; margin-top: 8px;
+      font-size: 10px; font-weight: 700;
+      padding: 3px 10px; border-radius: 20px;
+    }
+    .rims-card .icard-stage  { background: #fef3c7; color: #92400e; }
+    .amta-card .icard-stage  { background: #fee2e2; color: #991b1b; }
+    .pega-card .icard-stage  { background: #ede9fe; color: #5b21b6; }
+    .genai-card .icard-stage { background: #ecfeff; color: #0e7490; }
+
+    .click-hint {
+      position: absolute; right: 14px; bottom: 12px;
+      font-size: 10px; color: #9ca3af;
+      display: flex; align-items: center; gap: 4px;
+    }
+
+    /* ── LIFECYCLE CONTAINER ─────────────────────── */
+    .lifecycle-wrap {
+      background: white;
+      border-radius: 14px;
+      box-shadow: 0 4px 28px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+    .lifecycle-topbar {
+      background: #1e293b;
+      padding: 11px 22px;
+      color: white;
+      font-size: 12px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      letter-spacing: 0.3px;
+    }
+    .lifecycle-topbar span {
+      margin-left: auto;
+      font-size: 11px;
+      opacity: 0.5;
+      font-weight: 400;
+    }
+
+    /* ── STAGE COLUMNS ───────────────────────────── */
+    .stages {
+      display: flex;
+      overflow-x: auto;
+      min-height: 580px;
+    }
+    .stage {
+      flex: 1;
+      min-width: 210px;
+      border-right: 1px solid #e5e7eb;
+      display: flex;
+      flex-direction: column;
+    }
+    .stage:last-child { border-right: none; }
+
+    .stage-hdr {
+      background: var(--stage-header);
+      color: white;
+      padding: 9px 14px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 50%, calc(100% - 10px) 100%, 0 100%);
+    }
+    .stage:last-child .stage-hdr {
+      clip-path: none;
+    }
+    .stage-hdr .stage-num {
+      background: rgba(255,255,255,0.15);
+      border-radius: 4px;
+      padding: 1px 6px;
+      font-size: 9px;
+      font-weight: 700;
+    }
+
+    .stage-body { padding: 10px 10px 14px; flex: 1; }
+
+    /* section sub-label */
+    .sec-label {
+      font-size: 9.5px;
+      color: #9ca3af;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin: 8px 0 5px;
+    }
+
+    /* ── STEP ROW ────────────────────────────────── */
+    .step {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 6px 7px;
+      border-radius: 7px;
+      margin-bottom: 2px;
+      cursor: default;
+      transition: background 0.12s;
+      position: relative;
+    }
+    .step:hover:not(.hl) { background: #f9fafb; }
+
+    .si {
+      width: 22px; height: 22px;
+      border-radius: 4px;
+      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px;
+      color: white;
+      font-weight: 700;
+    }
+    .si.gr  { background: #16a34a; }
+    .si.or  { background: #d97706; }
+    .si.pu  { background: #7c3aed; }
+    .si.rd  { background: #dc2626; }
+    .si.bl  { background: #2563eb; }
+    .si.te  { background: #0d9488; }
+
+    .sn {
+      font-size: 11.5px;
+      color: #374151;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* add / configure */
+    .add-btn {
+      font-size: 10.5px; color: #6b7280;
+      padding: 4px 8px;
+      border: 1.5px dashed #d1d5db;
+      border-radius: 6px;
+      text-align: center;
+      margin-top: 4px;
+      cursor: pointer;
+    }
+    .cfg-link {
+      font-size: 9.5px; color: #9ca3af;
+      font-weight: 700; letter-spacing: 0.8px;
+      text-transform: uppercase;
+      padding: 7px 8px;
+      text-align: center;
+      border-top: 1px solid #e5e7eb;
+      margin-top: 8px;
+    }
+    .sec-divider { height: 1px; background: #e5e7eb; margin: 7px 0; }
+
+    /* ── HIGHLIGHTED STEPS ───────────────────────── */
+    .hl {
+      border: 2px solid;
+      border-radius: 9px;
+      padding: 6px 7px;
+      cursor: pointer;
+      margin-bottom: 4px;
+      margin-top: 2px;
+    }
+    .hl .sn { font-weight: 700; }
+
+    .hl.rims-hl {
+      border-color: #d97706;
+      background: linear-gradient(135deg, #fffbeb, #fef3c7);
+      animation: glowRims 2.8s ease-in-out infinite;
+    }
+    .hl.amta-hl {
+      border-color: #dc2626;
+      background: linear-gradient(135deg, #fff5f5, #fee2e2);
+      animation: glowAmta 2.8s ease-in-out infinite;
+    }
+    .hl.pega-hl {
+      border-color: #7c3aed;
+      background: linear-gradient(135deg, #faf5ff, #ede9fe);
+      animation: glowPega 2.8s ease-in-out infinite;
+    }
+    .hl.genai-hl {
+      border-color: #0891b2;
+      background: linear-gradient(135deg, #ecfeff, #cffafe);
+      animation: glowGenAI 2.8s ease-in-out infinite;
+    }
+
+    @keyframes glowRims {
+      0%,100% { box-shadow: 0 0 0 0 rgba(217,119,6,0.25); }
+      50%      { box-shadow: 0 0 0 6px rgba(217,119,6,0);  }
+    }
+    @keyframes glowAmta {
+      0%,100% { box-shadow: 0 0 0 0 rgba(220,38,38,0.25); }
+      50%      { box-shadow: 0 0 0 6px rgba(220,38,38,0);  }
+    }
+    @keyframes glowPega {
+      0%,100% { box-shadow: 0 0 0 0 rgba(124,58,237,0.25); }
+      50%      { box-shadow: 0 0 0 6px rgba(124,58,237,0);  }
+    }
+    @keyframes glowGenAI {
+      0%,100% { box-shadow: 0 0 0 0 rgba(8,145,178,0.28); }
+      50%      { box-shadow: 0 0 0 6px rgba(8,145,178,0);  }
+    }
+
+    .hl-badge {
+      position: absolute;
+      top: -10px; right: 6px;
+      font-size: 8.5px; font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      padding: 2px 7px;
+      border-radius: 10px;
+      white-space: nowrap;
+    }
+    .rims-hl .hl-badge   { background: #d97706; color: white; }
+    .amta-hl .hl-badge   { background: #dc2626; color: white; }
+    .pega-hl .hl-badge   { background: #7c3aed; color: white; }
+    .genai-hl .hl-badge  { background: #0891b2; color: white; }
+
+    /* ── INFO BAR ────────────────────────────────── */
+    .info-bar {
+      display: flex; gap: 10px; flex-wrap: wrap;
+      margin-top: 14px;
+    }
+    .chip {
+      display: flex; align-items: center; gap: 6px;
+      padding: 5px 12px;
+      background: white;
+      border-radius: 20px;
+      font-size: 11px; color: #4b5563;
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    }
+    .cdot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* ── MODAL ───────────────────────────────────── */
+    .overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.55);
+      backdrop-filter: blur(5px);
+      z-index: 200;
+      display: none;
+      align-items: center; justify-content: center;
+      padding: 20px;
+    }
+    .overlay.open { display: flex; }
+
+    .modal {
+      background: white;
+      border-radius: 16px;
+      max-width: 900px; width: 100%;
+      max-height: 88vh;
+      overflow: hidden;
+      display: flex; flex-direction: column;
+      box-shadow: 0 30px 70px rgba(0,0,0,0.38);
+      animation: slideUp 0.22s ease;
+    }
+    @keyframes slideUp {
+      from { transform: translateY(30px); opacity: 0; }
+      to   { transform: translateY(0);    opacity: 1; }
+    }
+
+    .modal-hdr {
+      padding: 20px 24px 16px;
+      border-bottom: 1px solid #e5e7eb;
+      display: flex; align-items: flex-start; justify-content: space-between;
+      gap: 12px;
+    }
+    .mh-left { flex: 1; }
+    .m-badge {
+      display: inline-block;
+      font-size: 10px; font-weight: 800;
+      text-transform: uppercase; letter-spacing: 1.2px;
+      padding: 3px 11px; border-radius: 20px;
+      margin-bottom: 8px;
+    }
+    .m-badge.rims  { background: #fef3c7; color: #92400e; }
+    .m-badge.amta  { background: #fee2e2; color: #991b1b; }
+    .m-badge.pega  { background: #ede9fe; color: #5b21b6; }
+    .m-badge.genai { background: #ecfeff; color: #0e7490; }
+
+    .m-title  { font-size: 21px; font-weight: 800; color: #111827; margin-bottom: 3px; }
+    .m-sub    { font-size: 12px; color: #6b7280; }
+
+    .m-close {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      border: none; background: #f3f4f6;
+      color: #6b7280; font-size: 16px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      transition: background 0.12s;
+    }
+    .m-close:hover { background: #e5e7eb; }
+
+    .modal-body {
+      padding: 18px 24px 24px;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .m-desc {
+      font-size: 13px; color: #4b5563;
+      line-height: 1.65;
+      padding: 12px 16px;
+      background: #f9fafb;
+      border-radius: 9px;
+      border-left: 3px solid #d1d5db;
+      margin-bottom: 20px;
+    }
+
+    /* tabs */
+    .tab-bar {
+      display: flex;
+      border-bottom: 2px solid #e5e7eb;
+      margin-bottom: 14px;
+    }
+    .tab {
+      padding: 8px 22px;
+      font-size: 13px; font-weight: 600;
+      color: #9ca3af;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      transition: all 0.15s;
+    }
+    .tab.on { color: var(--telstra-purple); border-bottom-color: var(--telstra-purple); }
+
+    .panel { display: none; }
+    .panel.on { display: block; }
+
+    .pl-label {
+      font-size: 10px; font-weight: 700; color: #6b7280;
+      text-transform: uppercase; letter-spacing: 1px;
+      margin-bottom: 6px;
+    }
+
+    pre {
+      background: #0f172a;
+      color: #e2e8f0;
+      padding: 16px 18px;
+      border-radius: 10px;
+      font-size: 12px;
+      line-height: 1.7;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    /* Telstra teal accent on scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--telstra-teal); }
+  </style>
+</head>
+<body>
+
+
+<!-- ═══════════════════════════════════════════════════ MAIN -->
+<main>
+
+  <!-- Summary Cards -->
+  <div class="summary-row">
+
+    <div class="icard rims-card" onclick="openModal('rims')">
+      <div class="icard-label">🔌 RIMS API — Mocked Integration</div>
+      <div class="icard-title">Search Device History</div>
+      <div class="icard-sub">Validates device IMEI and retrieves product & event history from the Retail Inventory Management System</div>
+      <div class="icard-stage">Return Initiation → Request Capture</div>
+      <div class="click-hint">👁 View Payload</div>
+    </div>
+
+    <div class="icard amta-card" onclick="openModal('amta')">
+      <div class="icard-label">🛡️ AMTA API — Mocked Integration</div>
+      <div class="icard-title">Stolen / Blacklist Device Check</div>
+      <div class="icard-sub">Verifies the device is not reported stolen, lost, or blocked via the AMTA IMEI blacklist database</div>
+      <div class="icard-stage">Device Validation → Status Verification</div>
+      <div class="click-hint">👁 View Payload</div>
+    </div>
+
+    <div class="icard pega-card" onclick="openModal('pega')">
+      <div class="icard-label">🤖 Pega Step Level AI Agent</div>
+      <div class="icard-title">Generate PDF Document</div>
+      <div class="icard-sub">AI agent autonomously pulls case data and compiles the structured warranty assessment PDF</div>
+      <div class="icard-stage">Assessment → Outcome Determination</div>
+      <div class="click-hint">👁 View Config</div>
+    </div>
+
+    <div class="icard genai-card" onclick="openModal('genai')">
+      <div class="icard-label">✨ GenAI Connect Steps</div>
+      <div class="icard-title">Device Assessment &amp; Findings Summary</div>
+      <div class="icard-sub">GenAI services assess front &amp; rear device images and analyse proof of purchase to summarize findings</div>
+      <div class="icard-stage">Assessment → Damage Assessment &amp; Outcome Determination</div>
+      <div class="click-hint">👁 View Config</div>
+    </div>
+
+  </div>
+
+  <!-- Lifecycle Diagram -->
+  <div class="lifecycle-wrap">
+    <div class="lifecycle-topbar">
+      <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
+        <circle cx="7.5" cy="7.5" r="6.5" stroke="white" stroke-width="1.4"/>
+        <path d="M4.5 7.5h6M9 5.5l2 2-2 2" stroke="white" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Device Return &amp; Warranty — Full Case Lifecycle
+      <span>Click any highlighted step to view integration details &amp; payloads →</span>
+    </div>
+
+    <div class="stages">
+
+      <!-- ── STAGE 1: Return Initiation ── -->
+      <div class="stage">
+        <div class="stage-hdr">
+          <span class="stage-num">1</span>
+          Return Initiation
+        </div>
+        <div class="stage-body">
+          <div class="sec-label">Request Capture</div>
+
+          <div class="step">
+            <div class="si gr">■</div>
+            <span class="sn">Capture Customer Info</span>
+          </div>
+
+          <div class="step">
+            <div class="si gr">■</div>
+            <span class="sn">Device IMEI Capture</span>
+          </div>
+
+          <!-- ★ RIMS API HIGHLIGHT -->
+          <div class="step hl rims-hl" onclick="openModal('rims')">
+            <div class="hl-badge">RIMS API</div>
+            <div class="si or">⚙</div>
+            <span class="sn">Search Device History</span>
+          </div>
+
+          <div class="step">
+            <div class="si gr">■</div>
+            <span class="sn">Device Validation</span>
+          </div>
+
+          <div class="add-btn">+ FORM STEP</div>
+        </div>
+      </div>
+
+      <!-- ── STAGE 2: Device Validation ── -->
+      <div class="stage">
+        <div class="stage-hdr">
+          <span class="stage-num">2</span>
+          Device Validation
+        </div>
+        <div class="stage-body">
+          <div class="sec-label">Status Verification</div>
+
+          <div class="step">
+            <div class="si or">⚙</div>
+            <span class="sn">Validate Warranty</span>
+          </div>
+
+          <div class="step">
+            <div class="si or">⚙</div>
+            <span class="sn">Apple Lock Check</span>
+          </div>
+
+          <!-- ★ AMTA API HIGHLIGHT -->
+          <div class="step hl amta-hl" onclick="openModal('amta')">
+            <div class="hl-badge">AMTA API</div>
+            <div class="si rd">✕</div>
+            <span class="sn">Stolen Device Check</span>
+          </div>
+
+          <div class="step">
+            <div class="si rd">◆</div>
+            <span class="sn">Confirm Device Status</span>
+          </div>
+
+          <div class="step">
+            <div class="si or">→</div>
+            <span class="sn">Change to specific stage</span>
+          </div>
+
+          <div class="step">
+            <div class="si or">←</div>
+            <span class="sn">Change to previous stage</span>
+          </div>
+
+          <div class="cfg-link">CONFIGURE PROCESS</div>
+        </div>
+      </div>
+
+      <!-- ── STAGE 3: Assessment ── -->
+      <div class="stage" style="min-width:230px">
+        <div class="stage-hdr">
+          <span class="stage-num">3</span>
+          Assessment
+        </div>
+        <div class="stage-body">
+          <div class="sec-label">Damage Assessment</div>
+
+          <div class="step">
+            <div class="si gr">■</div>
+            <span class="sn">Record Physical Condition</span>
+          </div>
+
+          <!-- ★ GenAI Connect Step: front -->
+          <div class="step hl genai-hl" onclick="openModal('genai')">
+            <div class="hl-badge">GENAI CONNECT</div>
+            <div class="si te">✦</div>
+            <span class="sn">Assess device (front)</span>
+          </div>
+
+          <!-- ★ GenAI Connect Step: rear -->
+          <div class="step hl genai-hl" onclick="openModal('genai')">
+            <div class="hl-badge">GENAI CONNECT</div>
+            <div class="si te">✦</div>
+            <span class="sn">Assess device (rear)</span>
+          </div>
+
+          <div class="add-btn">+ STEP</div>
+          <div class="sec-divider"></div>
+          <div class="sec-label">Outcome Determination</div>
+
+          <div class="step">
+            <div class="si or">⚙</div>
+            <span class="sn">Calculate Assessment Outcome</span>
+          </div>
+
+          <div class="step">
+            <div class="si gr">■</div>
+            <span class="sn">Proof of Warranty Upload</span>
+          </div>
+
+          <!-- ★ GenAI Connect Step: summarize -->
+          <div class="step hl genai-hl" onclick="openModal('genai')">
+            <div class="hl-badge">GENAI CONNECT</div>
+            <div class="si te">✦</div>
+            <span class="sn">Summarize Findings</span>
+          </div>
+
+          <div class="step">
+            <div class="si gr">■</div>
+            <span class="sn">Customer Preferences</span>
+          </div>
+
+          <div class="step">
+            <div class="si or">⚙</div>
+            <span class="sn">Notify Assessment Result</span>
+          </div>
+
+          <!-- ★ PEGA AGENT HIGHLIGHT -->
+          <div class="step hl pega-hl" onclick="openModal('pega')">
+            <div class="hl-badge">PEGA AGENT</div>
+            <div class="si pu">🤖</div>
+            <span class="sn">Generate PDF Document</span>
+          </div>
+
+          <div class="step">
+            <div class="si or">⚙</div>
+            <span class="sn">Generate warranty document</span>
+          </div>
+
+          <div class="add-btn">+ STEP</div>
+        </div>
+      </div>
+
+      <!-- ── STAGE 4: Logistics Processes ── -->
+      <div class="stage">
+        <div class="stage-hdr">
+          <span class="stage-num">4</span>
+          Logistics Processes
+        </div>
+        <div class="stage-body">
+          <div class="sec-label">Return Logistics</div>
+
+          <div class="step">
+            <div class="si or">⚙</div>
+            <span class="sn">Order creation &amp; shipping</span>
+          </div>
+
+          <div class="step">
+            <div class="si or">⚙</div>
+            <span class="sn">Notify Shipping Info</span>
+          </div>
+
+          <div class="step">
+            <div class="si or">⚙</div>
+            <span class="sn">Notify Warehouse of Completion</span>
+          </div>
+
+          <div class="step">
+            <div class="si gr">■</div>
+            <span class="sn">Wait for Warehouse Assessment</span>
+          </div>
+
+          <div class="add-btn">+ STEP</div>
+        </div>
+      </div>
+
+      <!-- ── STAGE 5: Case Closure ── -->
+      <div class="stage">
+        <div class="stage-hdr" style="border-left:4px solid #dc2626">
+          <span class="stage-num">5</span>
+          Case Closure
+        </div>
+        <div class="stage-body">
+          <div class="sec-label">Close Case</div>
+
+          <div class="step">
+            <div class="si rd">◆</div>
+            <span class="sn">Confirm Case Outcome</span>
+          </div>
+
+          <div class="step">
+            <div class="si or">⚙</div>
+            <span class="sn">Archive Attachments</span>
+          </div>
+
+          <div class="cfg-link">CONFIGURE PROCESS</div>
+        </div>
+      </div>
+
+    </div><!-- /stages -->
+  </div><!-- /lifecycle-wrap -->
+
+  <!-- Info chips -->
+  <div class="info-bar">
+    <div class="chip">
+      <div class="cdot" style="background:#d97706"></div>
+      RIMS — Retail Inventory Management System (Mocked)
+    </div>
+    <div class="chip">
+      <div class="cdot" style="background:#dc2626"></div>
+      AMTA — Australian Mobile Telecommunications Association (Mocked)
+    </div>
+    <div class="chip">
+      <div class="cdot" style="background:#7c3aed"></div>
+      Pega GenAI Step Level Agent — Warranty PDF Generation
+    </div>
+    <div class="chip">
+      <div class="cdot" style="background:#0891b2"></div>
+      GenAI Connect Steps — Device Image Assessment &amp; Findings Summary
+    </div>
+  </div>
+
+</main>
+
+<!-- ═══════════════════════════════════════════════════ MODAL -->
+<div class="overlay" id="overlay" onclick="overlayClick(event)">
+  <div class="modal">
+    <div class="modal-hdr">
+      <div class="mh-left">
+        <div class="m-badge" id="mBadge"></div>
+        <div class="m-title" id="mTitle"></div>
+        <div class="m-sub"   id="mSub"></div>
+      </div>
+      <button class="m-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="m-desc" id="mDesc"></div>
+      <div class="tab-bar" id="tabBar"></div>
+      <div id="panels"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const MODALS = {
+    rims: {
+      badge: '🔌 RIMS API — Mocked Integration',
+      badgeClass: 'rims',
+      title: 'Search Device History',
+      sub: 'Return Initiation → Request Capture  ·  Step 3 of 4',
+      desc: 'This step makes a mocked API call to RIMS (Retail Inventory Management System) to validate the device and retrieve its full product & event history using the IMEI captured in the previous step. In production, this validates device eligibility for return and warranty assessment by confirming sale, receipt, and dispatch events.',
+      tabs: ['Request Payload', 'Response Payload'],
+      payloads: [
+`{
+  "imei": "994505989132903"
+}`,
+`{
+  "productId": "100112341",
+  "serials": [
+    {
+      "id":        "994505989132903",
+      "idType":    "IMEI",
+      "isPrimary": true
+    },
+    {
+      "id":        "994505989136981",
+      "idType":    "IMEI2",
+      "isPrimary": false
+    },
+    {
+      "id":        "99450598913290994505989132903",
+      "idType":    "EID",
+      "isPrimary": false
+    }
+  ],
+  "events": [
+    {
+      "type":      "SALE",
+      "dateTime":  "2026-04-03T14:00:00Z",
+      "productId": "100112341",
+      "location":  { "id": "1234", "premiseCode": "ABCD" }
+    },
+    {
+      "type":      "RECEIPT",
+      "dateTime":  "2026-02-26T15:54:15Z",
+      "productId": "100112341",
+      "location":  { "id": "1234", "premiseCode": "ABCD" }
+    },
+    {
+      "type":         "DISPATCH",
+      "dateTime":     "2026-02-26T15:54:15Z",
+      "productId":    "100112341",
+      "fromLocation": { "id": "54000" },
+      "toLocation":   { "id": "12981", "premiseCode": "ABCD" }
+    }
+  ]
+}`
+      ]
+    },
+
+    amta: {
+      badge: '🛡️ AMTA API — Mocked Integration',
+      badgeClass: 'amta',
+      title: 'Stolen / Blacklist Device Check',
+      sub: 'Device Validation → Status Verification  ·  Step 3 of 6',
+      desc: 'This step makes a mocked API call to the AMTA (Australian Mobile Telecommunications Association) IMEI blacklist database. It verifies the device is not reported stolen, lost, or blocked. The response includes block status (isBlocked), carrier information, handset type, and timeline dates — which feed downstream decisioning steps.',
+      tabs: ['Request Payload', 'Response Payload'],
+      payloads: [
+`{
+  "taskCharacteristic": [
+    {
+      "name": "queryFilter",
+      "value": {
+        "imei": "994505989132903"
+      }
+    }
+  ],
+  "taskSpecification": {
+    "href": "serviceCatalogManagement/v4/taskSpecification/2373483b-3698-4f29-b43d-ce9939177efd",
+    "id":   "2373483b-dad8-4f29-b43d-3698"
+  }
+}`,
+`{
+  "id":               "61663565f",
+  "href":             "activationAndConfiguration/v4/service/deviceTypeManagement/queryDevice/61663565f",
+  "state":            "Done",
+  "taskCreationDate": "2026-06-04T14:02:13.544Z",
+  "taskSpecification": {
+    "id":   "2373483f",
+    "href": "serviceCatalogManagement/v4/taskSpecification/2373483b-dad8-4f29-b43d-ce9939177efd"
+  },
+  "taskCharacteristic": [
+    {
+      "name": "wirelessDeviceItems",
+      "value": [
+        {
+          "imei":             "994505989132903",
+          "serviceNumber":    "0487843429",
+          "imsi":             "",
+          "isBlocked":        false,
+          "reason":           "n/a",
+          "actionDate":       "n/a",
+          "operator":         "n/a",
+          "notes":            "n/a",
+          "carrier":          "Telstra",
+          "firstUseDate":     "2025-02-13T00:00:00.000Z",
+          "recentChangeDate": "2025-02-13T00:00:00.000Z",
+          "lastSeenDate":     "2026-05-25T00:00:00.000Z",
+          "inUseFlag":        true,
+          "handsetType":      "Apple iPhone 16 Pro Max"
+        }
+      ]
+    }
+  ]
+}`
+      ]
+    },
+
+    genai: {
+      badge: '✨ GenAI Connect Steps',
+      badgeClass: 'genai',
+      title: 'Device Assessment & Findings Summary',
+      sub: 'Assessment → Damage Assessment & Outcome Determination  ·  3 steps',
+      desc: 'Three steps in the Assessment stage are powered by Pega GenAI Connect — an integration layer that routes requests to GenAI services. "Assess device (front)" and "Assess device (rear)" use vision-capable GenAI models to evaluate submitted device images for damage, wear, and defects. "Summarize Findings" analyses the uploaded proof of purchase document and synthesises all assessment data into a coherent findings summary for the agent.',
+      tabs: ['Assess Device (Front / Rear)', 'Summarize Findings'],
+      payloads: [
+`// GenAI Connect Step — Device Image Assessment
+// Applied to: "Assess device (front)" & "Assess device (rear)"
+
+{
+  "stepType":    "GenAIConnect",
+  "stepName":    "Assess device (front | rear)",
+  "stage":       "Assessment",
+  "section":     "Damage Assessment",
+  "trigger":     "OnStepEntry",
+
+  "genAIService": {
+    "provider":  "PegaGenAIConnect",
+    "model":     "vision-multimodal-v1",
+    "task":      "ImageDamageAssessment"
+  },
+
+  "inputs": {
+    "imageSource":  "CaseAttachments.DevicePhoto.[front|rear]",
+    "deviceType":   "pyWorkPage.DeviceDetails.HandsetType",
+    "imei":         "pyWorkPage.DeviceDetails.IMEI"
+  },
+
+  "outputs": {
+    "damageLevel":       "pyWorkPage.Assessment.[Front|Rear].DamageLevel",
+    "damageDescription": "pyWorkPage.Assessment.[Front|Rear].Description",
+    "confidenceScore":   "pyWorkPage.Assessment.[Front|Rear].Confidence",
+    "affectedAreas":     "pyWorkPage.Assessment.[Front|Rear].AffectedAreas[]"
+  },
+
+  "promptTemplate": "Analyse the submitted image of the {deviceType} device. Identify any visible damage, cracks, scratches, or defects. Classify the damage severity as: None / Minor / Moderate / Severe. List affected areas.",
+
+  "status": "✅ Configured · ✅ Mapped to case data model"
+}`,
+`// GenAI Connect Step — Summarize Findings
+// Applied to: "Summarize Findings" (Outcome Determination)
+
+{
+  "stepType":    "GenAIConnect",
+  "stepName":    "Summarize Findings",
+  "stage":       "Assessment",
+  "section":     "Outcome Determination",
+  "trigger":     "OnStepEntry",
+
+  "genAIService": {
+    "provider":  "PegaGenAIConnect",
+    "model":     "document-analysis-v2",
+    "task":      "ProofOfPurchaseAnalysis"
+  },
+
+  "inputs": {
+    "proofOfPurchase":    "CaseAttachments.ProofOfWarrantyUpload",
+    "frontAssessment":    "pyWorkPage.Assessment.Front",
+    "rearAssessment":     "pyWorkPage.Assessment.Rear",
+    "deviceDetails":      "pyWorkPage.DeviceDetails",
+    "customerInfo":       "pyWorkPage.CustomerInfo",
+    "assessmentOutcome":  "pyWorkPage.AssessmentOutcome"
+  },
+
+  "outputs": {
+    "findingsSummary":    "pyWorkPage.Findings.Summary",
+    "warrantyStatus":     "pyWorkPage.Findings.WarrantyStatus",
+    "recommendedAction":  "pyWorkPage.Findings.RecommendedAction",
+    "purchaseValidated":  "pyWorkPage.Findings.PurchaseValidated"
+  },
+
+  "promptTemplate": "You are a warranty assessment agent for Telstra. Review the following device assessment data and proof of purchase document. Produce a concise summary of findings including: (1) damage severity, (2) proof of purchase validity, (3) warranty eligibility, (4) recommended action.",
+
+  "status": "✅ Configured · ✅ Document analysis enabled · ✅ Mapped to case data model"
+}`
+      ]
+    },
+
+    pega: {
+      badge: '🤖 Pega Step Level AI Agent',
+      badgeClass: 'pega',
+      title: 'Generate PDF Document',
+      sub: 'Assessment → Outcome Determination  ·  Step 6 of 8',
+      desc: 'This is a Pega Step Level Agent — an AI-powered automation embedded within the Assessment stage. The agent autonomously retrieves all relevant case data (damage findings, customer info, device details, warranty outcomes) and compiles a structured warranty PDF document. It replaces manual document generation and ensures consistent, audit-ready outputs across all warranty cases.',
+      tabs: ['Agent Configuration', 'Behaviour / Logic'],
+      payloads: [
+`{
+  "agentType": "PegaStepLevelAgent",
+  "stepName":  "Generate PDF Document",
+  "stage":     "Assessment",
+  "section":   "Outcome Determination",
+  "trigger":   "OnStepEntry",
+
+  "dataInputs": [
+    "CustomerInfo",
+    "DeviceDetails",
+    "IMEICapture",
+    "DamageAssessmentFindings",
+    "AssessmentOutcome",
+    "WarrantyEligibility",
+    "CustomerPreferences"
+  ],
+
+  "outputArtifact": {
+    "type":        "PDF",
+    "template":    "WarrantyAssessmentReport_v2",
+    "destination": "CaseAttachments"
+  },
+
+  "llmConfig": {
+    "model":       "pega-genai-1.0",
+    "temperature": 0.2,
+    "maxTokens":   2048
+  }
+}`,
+`// AGENT BEHAVIOUR — Step Level Agent Logic
+//
+// ① On step activation, the agent fetches all
+//    structured case data from the Pega case context
+//
+// ② Populates WarrantyAssessmentReport_v2 template:
+//      · Customer name, contact, service number
+//      · Device: IMEI, handset type, carrier
+//      · Damage description (front + rear assessment)
+//      · Calculated assessment outcome
+//      · Warranty eligibility determination
+//      · Customer preferences & recommended next steps
+//
+// ③ Generates signed PDF and attaches to case
+//    under CaseAttachments
+//
+// ④ Triggers the downstream "Generate warranty document"
+//    step for final dispatch to customer
+//
+// STATUS
+//   ✅  Pega GenAI agent configured
+//   ✅  Template mapped to case data model
+//   ✅  Attached to Assessment stage
+//   ✅  Output wired to CaseAttachments
+`
+      ]
+    }
+  };
+
+  let currentKey = null;
+
+  function openModal(key) {
+    const d = MODALS[key];
+    if (!d) return;
+    currentKey = key;
+
+    document.getElementById('mBadge').textContent  = d.badge;
+    document.getElementById('mBadge').className    = 'm-badge ' + d.badgeClass;
+    document.getElementById('mTitle').textContent  = d.title;
+    document.getElementById('mSub').textContent    = d.sub;
+    document.getElementById('mDesc').textContent   = d.desc;
+
+    // Build tabs
+    document.getElementById('tabBar').innerHTML =
+      d.tabs.map((t, i) =>
+        `<div class="tab ${i===0?'on':''}" onclick="switchTab(${i})">${t}</div>`
+      ).join('');
+
+    // Build panels
+    document.getElementById('panels').innerHTML =
+      d.payloads.map((p, i) =>
+        `<div class="panel ${i===0?'on':''}" id="p${i}">
+           <div class="pl-label">${d.tabs[i]}</div>
+           <pre>${esc(p)}</pre>
+         </div>`
+      ).join('');
+
+    document.getElementById('overlay').classList.add('open');
+  }
+
+  function switchTab(idx) {
+    document.querySelectorAll('.tab').forEach((t, i) => t.classList.toggle('on', i === idx));
+    document.querySelectorAll('.panel').forEach((p, i) => p.classList.toggle('on', i === idx));
+  }
+
+  function closeModal() {
+    document.getElementById('overlay').classList.remove('open');
+  }
+
+  function overlayClick(e) {
+    if (e.target === document.getElementById('overlay')) closeModal();
+  }
+
+  function esc(s) {
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+</script>
+</body>
+</html>
