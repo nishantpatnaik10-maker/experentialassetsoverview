@@ -462,26 +462,12 @@
             <div style="background:#0d1b2a; padding:8px 14px; font-size:0.78rem; font-weight:600; color:#a8c8e8; letter-spacing:0.5px;">
               ⚡ Case Lifecycle — Integration Overview
             </div>
-            <div id="lifecycle-wrapper" style="position:relative; width:100%; overflow:hidden;">
+            <div id="lifecycle-wrapper" style="position:relative; width:100%; overflow:hidden; height:600px;">
               <iframe id="lifecycle-frame" src="telstra_device_lifecycle.html"
-                style="position:absolute; top:0; left:0; width:1280px; border:none; transform-origin:top left;"
-                scrolling="no" title="Case Lifecycle"></iframe>
+                style="position:absolute; top:0; left:0; width:1280px; height:1040px; border:none; transform-origin:top left;"
+                scrolling="no" title="Case Lifecycle"
+                onload="scaleLifecycleFrame()"></iframe>
             </div>
-            <script>
-              (function() {
-                var wrapper = document.getElementById('lifecycle-wrapper');
-                var frame = document.getElementById('lifecycle-frame');
-                var nativeW = 1280, nativeH = 1040;
-                function scaleFrame() {
-                  var scale = wrapper.offsetWidth / nativeW;
-                  frame.style.transform = 'scale(' + scale + ')';
-                  frame.style.height = nativeH + 'px';
-                  wrapper.style.height = Math.round(nativeH * scale) + 'px';
-                }
-                scaleFrame();
-                window.addEventListener('resize', scaleFrame);
-              })();
-            </script>
           </div>
         </div>
       </li>
@@ -542,6 +528,17 @@
 </div>
 
 <script>
+  function scaleLifecycleFrame() {
+    var wrapper = document.getElementById('lifecycle-wrapper');
+    var frame = document.getElementById('lifecycle-frame');
+    if (!wrapper || !frame) return;
+    var nativeW = 1280, nativeH = 1040;
+    var scale = wrapper.offsetWidth / nativeW;
+    frame.style.transform = 'scale(' + scale + ')';
+    wrapper.style.height = Math.round(nativeH * scale) + 'px';
+    window.addEventListener('resize', scaleLifecycleFrame);
+  }
+
   function switchTab(id, btn) {
     document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
     document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
