@@ -152,6 +152,7 @@
     .icard {
       flex: 1;
       background: white;
+      padding-bottom: 36px !important;
       border-radius: 12px;
       padding: 16px 18px;
       border-left: 5px solid;
@@ -237,12 +238,12 @@
     /* ── STAGE COLUMNS ───────────────────────────── */
     .stages {
       display: flex;
-      overflow-x: auto;
+      overflow-x: hidden;
       min-height: 580px;
     }
     .stage {
       flex: 1;
-      min-width: 210px;
+      min-width: 0;
       border-right: 1px solid #e5e7eb;
       display: flex;
       flex-direction: column;
@@ -687,7 +688,7 @@
       </div>
 
       <!-- ── STAGE 3: Assessment ── -->
-      <div class="stage" style="min-width:230px">
+      <div class="stage">
         <div class="stage-hdr">
           <span class="stage-num">3</span>
           Assessment
