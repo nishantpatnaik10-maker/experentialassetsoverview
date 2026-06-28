@@ -464,7 +464,7 @@
             </div>
             <div id="lifecycle-wrapper" style="position:relative; width:100%; overflow:hidden; height:600px;">
               <iframe id="lifecycle-frame" src="telstra_device_lifecycle.html"
-                style="position:absolute; top:0; left:0; width:1280px; height:1040px; border:none; transform-origin:top left;"
+                style="position:absolute; top:0; left:0; width:1280px; height:1400px; border:none; transform-origin:top left;"
                 scrolling="no" title="Case Lifecycle"
                 onload="scaleLifecycleFrame()"></iframe>
             </div>
@@ -532,7 +532,7 @@
     var wrapper = document.getElementById('lifecycle-wrapper');
     var frame = document.getElementById('lifecycle-frame');
     if (!wrapper || !frame) return;
-    var nativeW = 1280, nativeH = 1040;
+    var nativeW = 1280, nativeH = 1400;
     var scale = wrapper.offsetWidth / nativeW;
     frame.style.transform = 'scale(' + scale + ')';
     wrapper.style.height = Math.round(nativeH * scale) + 'px';
