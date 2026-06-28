@@ -36,34 +36,57 @@
       color: #a8c8e8;
     }
 
-    /* ── Tab bar ── */
-    .tab-bar {
-      display: flex;
+    /* ── Carousel nav ── */
+    .carousel-nav {
       background: #0d1b2a;
-      padding: 0 40px;
-      gap: 4px;
       border-bottom: 3px solid #00a8e8;
+      display: flex;
+      align-items: center;
+      padding: 0 24px;
+      gap: 16px;
+      user-select: none;
     }
 
-    .tab-btn {
-      padding: 14px 24px;
+    .carousel-arrow {
       background: transparent;
       border: none;
       color: #a8c8e8;
-      font-size: 0.95rem;
-      font-weight: 600;
+      font-size: 1.3rem;
       cursor: pointer;
-      border-bottom: 3px solid transparent;
-      margin-bottom: -3px;
-      transition: color 0.2s, border-color 0.2s;
-      white-space: nowrap;
+      padding: 12px 8px;
+      transition: color 0.2s;
+      flex-shrink: 0;
+      line-height: 1;
+    }
+    .carousel-arrow:hover { color: #fff; }
+    .carousel-arrow:disabled { color: #3a5068; cursor: default; }
+
+    .carousel-indicators {
+      display: flex;
+      gap: 10px;
+      flex: 1;
+      justify-content: center;
+      align-items: center;
     }
 
-    .tab-btn:hover { color: #fff; }
+    .carousel-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: #3a5068;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.2s;
+    }
+    .carousel-dot.active {
+      background: #00a8e8;
+      transform: scale(1.3);
+    }
 
-    .tab-btn.active {
-      color: #00a8e8;
-      border-bottom-color: #00a8e8;
+    .carousel-label {
+      color: #a8c8e8;
+      font-size: 0.88rem;
+      font-weight: 600;
+      min-width: 220px;
+      text-align: center;
     }
 
     /* ── Content ── */
@@ -279,15 +302,26 @@
 </head>
 <body>
 
-<header>
-  <h1>Demo Hub</h1>
-  <p>Experience assets, guided walkthroughs, and reference links</p>
+<header style="display:flex; align-items:center; justify-content:space-between; gap:20px;">
+  <div>
+    <h1>Demo Hub</h1>
+    <p>Experience assets, guided walkthroughs, and reference links</p>
+  </div>
+  <div style="display:flex; flex-direction:column; align-items:flex-end; gap:4px; flex-shrink:0;">
+    <span style="font-size:0.7rem; letter-spacing:1.5px; text-transform:uppercase; color:#a8c8e8;">Powered by</span>
+    <div style="background:#fff; border-radius:6px; padding:5px 16px; font-weight:900; font-size:1.1rem; letter-spacing:3px; color:#0073CF; font-family:Arial,sans-serif; line-height:1;">PEGA</div>
+  </div>
 </header>
 
-<div class="tab-bar">
-  <button class="tab-btn active" onclick="switchTab('overview', this)">Overview</button>
-  <button class="tab-btn" onclick="switchTab('naa', this)">National Archives of Australia</button>
-  <button class="tab-btn" onclick="switchTab('telstra', this)">Telstra DCM</button>
+<div class="carousel-nav">
+  <button class="carousel-arrow" id="prev-btn" onclick="carouselPrev()" disabled>&#8592;</button>
+  <div class="carousel-indicators">
+    <span class="carousel-dot active" onclick="carouselGo(0)"></span>
+    <span class="carousel-dot" onclick="carouselGo(1)"></span>
+    <span class="carousel-dot" onclick="carouselGo(2)"></span>
+  </div>
+  <span class="carousel-label" id="carousel-label">Overview</span>
+  <button class="carousel-arrow" id="next-btn" onclick="carouselNext()">&#8594;</button>
 </div>
 
 <!-- ═══════════════════════════════════════════
@@ -310,7 +344,7 @@
       </li>
       <li>
         <div>
-          This is not a fully built-out application — only a percentage of the app has been developed to allow end-to-end execution for individual case types.
+          This is not a fully built-out application — only a percentage of the app has been configured to allow end-to-end execution for individual case types.
         </div>
       </li>
       <li>
@@ -344,7 +378,7 @@
       </li>
       <li>
         <div>
-          <strong>Preparation is key</strong> — Factor in time to prepare before the demo.
+          <strong>Preparation is key</strong> — Factor in time to prepare for the presentation.
           <span class="more-toggle" onclick="toggleMore(this)">More info ▾</span>
           <div class="more-body">
             Transitions and handovers between presenters are important. If you are adding feature functions on top of the Blueprint, both development time and preparation time must be factored into your planning.
@@ -480,7 +514,15 @@
             </li>
             <li style="display:flex; align-items:flex-start; gap:10px;">
               <span style="min-width:24px; height:24px; background:#e8f4fd; color:#1b3a5c; border-radius:4px; display:flex; align-items:center; justify-content:center; font-size:0.78rem; font-weight:700; flex-shrink:0;">b</span>
-              <span>Presentation highlights — no token cost, pitching ourselves as partners and not vendors, centre out architecture, and cost of Pega vs different patterns of agentic implementation provided by Matthias</span>
+              <div>
+                Presentation highlights:
+                <ul style="list-style:none; margin-top:8px; display:flex; flex-direction:column; gap:6px;">
+                  <li style="display:flex; align-items:flex-start; gap:8px;"><span style="color:#00a8e8; font-weight:700; flex-shrink:0;">—</span><span>No token cost</span></li>
+                  <li style="display:flex; align-items:flex-start; gap:8px;"><span style="color:#00a8e8; font-weight:700; flex-shrink:0;">—</span><span>Pitching ourselves as partners and not vendors</span></li>
+                  <li style="display:flex; align-items:flex-start; gap:8px;"><span style="color:#00a8e8; font-weight:700; flex-shrink:0;">—</span><span>Centre out architecture</span></li>
+                  <li style="display:flex; align-items:flex-start; gap:8px;"><span style="color:#00a8e8; font-weight:700; flex-shrink:0;">—</span><span>Cost of Pega vs different patterns of agentic implementation provided by Matthias</span></li>
+                </ul>
+              </div>
             </li>
           </ul>
         </div>
@@ -527,6 +569,24 @@
 </div>
 
 <script>
+  const tabs = ['overview', 'naa', 'telstra'];
+  const tabLabels = ['Overview', 'National Archives of Australia', 'Telstra DCM'];
+  let currentTab = 0;
+
+  function carouselGo(idx) {
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.carousel-dot').forEach(el => el.classList.remove('active'));
+    currentTab = idx;
+    document.getElementById(tabs[idx]).classList.add('active');
+    document.querySelectorAll('.carousel-dot')[idx].classList.add('active');
+    document.getElementById('carousel-label').textContent = tabLabels[idx];
+    document.getElementById('prev-btn').disabled = idx === 0;
+    document.getElementById('next-btn').disabled = idx === tabs.length - 1;
+  }
+
+  function carouselPrev() { if (currentTab > 0) carouselGo(currentTab - 1); }
+  function carouselNext() { if (currentTab < tabs.length - 1) carouselGo(currentTab + 1); }
+
   function scaleLifecycleFrame() {
     var wrapper = document.getElementById('lifecycle-wrapper');
     var frame = document.getElementById('lifecycle-frame');
@@ -536,13 +596,6 @@
     frame.style.transform = 'scale(' + scale + ')';
     wrapper.style.height = Math.round(nativeH * scale) + 'px';
     window.addEventListener('resize', scaleLifecycleFrame);
-  }
-
-  function switchTab(id, btn) {
-    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-    document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-    btn.classList.add('active');
   }
 
   function toggleMore(el) {
