@@ -1,5 +1,5 @@
 // ENGAGEMENTS DATA FILE
-// Auto-updated by Sync to GitHub on 2026-06-27T22:44:06.819Z
+// Auto-updated by Sync to GitHub on 2026-07-01T05:55:06.151Z
 // Do not edit manually — use the dashboard.
 
 const INITIAL_ENGAGEMENTS = [
@@ -62,5 +62,15 @@ const INITIAL_ENGAGEMENTS = [
     "attendees": "Kinneh Obi",
     "notes": "CS/BO experiences at",
     "id": "eng-1782600239094"
+  },
+  {
+    "title": "Sainsbury's CS BO Experiences",
+    "date": "2026-07-09",
+    "endDate": "2026-07-09",
+    "gameboard": "Gameboard 1",
+    "type": "Workshop",
+    "attendees": "Kinneh Obi",
+    "notes": "",
+    "id": "eng-1782885297027"
   }
 ];
