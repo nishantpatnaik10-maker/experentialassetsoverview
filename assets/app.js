@@ -55,7 +55,7 @@ function renderInstances() {
       <div class="gameboard-header">
         <span>&#127918; ${group.gameboard}</span>
         <span class="badge">${group.instances.length} instances</span>
-        <a href="https://${group.gameboard}" target="_blank" rel="noopener">Open Gameboard &#8599;</a>
+        <a href="${group.url}" target="_blank" rel="noopener">${group.url} &#8599;</a>
       </div>
       <table>
         <thead>
