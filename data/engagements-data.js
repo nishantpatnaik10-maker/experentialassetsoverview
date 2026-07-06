@@ -1,5 +1,5 @@
 // ENGAGEMENTS DATA FILE
-// Auto-updated by Sync to GitHub on 2026-07-01T05:55:06.151Z
+// Auto-updated by Sync to GitHub on 2026-07-06T11:38:29.685Z
 // Do not edit manually — use the dashboard.
 
 const INITIAL_ENGAGEMENTS = [
@@ -72,5 +72,15 @@ const INITIAL_ENGAGEMENTS = [
     "attendees": "Kinneh Obi",
     "notes": "",
     "id": "eng-1782885297027"
+  },
+  {
+    "title": "Krakow Summer Internship Programme",
+    "date": "2026-07-07",
+    "endDate": "2026-07-07",
+    "gameboard": "Gameboard 3",
+    "type": "Workshop",
+    "attendees": "Wojciech",
+    "notes": "",
+    "id": "eng-1783337894512"
   }
 ];
