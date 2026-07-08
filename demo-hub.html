@@ -42,51 +42,65 @@
       border-bottom: 3px solid #00a8e8;
       display: flex;
       align-items: center;
-      padding: 0 24px;
-      gap: 16px;
+      padding: 0 32px;
+      gap: 20px;
       user-select: none;
+      min-height: 60px;
     }
 
     .carousel-arrow {
-      background: transparent;
-      border: none;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 50%;
       color: #a8c8e8;
-      font-size: 1.3rem;
+      font-size: 1rem;
       cursor: pointer;
-      padding: 12px 8px;
-      transition: color 0.2s;
+      width: 36px; height: 36px;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s, color 0.2s, border-color 0.2s;
       flex-shrink: 0;
-      line-height: 1;
     }
-    .carousel-arrow:hover { color: #fff; }
-    .carousel-arrow:disabled { color: #3a5068; cursor: default; }
+    .carousel-arrow:hover { background: rgba(0,168,232,0.2); color: #fff; border-color: #00a8e8; }
+    .carousel-arrow:disabled { background: transparent; color: #2a4060; border-color: #1a2e44; cursor: default; }
+
+    .carousel-track {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .carousel-label {
+      color: #fff;
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+    }
 
     .carousel-indicators {
       display: flex;
-      gap: 10px;
-      flex: 1;
-      justify-content: center;
+      gap: 8px;
       align-items: center;
     }
 
     .carousel-dot {
-      width: 10px; height: 10px;
-      border-radius: 50%;
-      background: #3a5068;
+      height: 4px;
+      border-radius: 2px;
+      background: #2a4060;
       cursor: pointer;
-      transition: background 0.2s, transform 0.2s;
+      transition: background 0.2s, width 0.3s;
+      width: 24px;
     }
     .carousel-dot.active {
       background: #00a8e8;
-      transform: scale(1.3);
+      width: 40px;
     }
 
-    .carousel-label {
-      color: #a8c8e8;
-      font-size: 0.88rem;
-      font-weight: 600;
-      min-width: 220px;
-      text-align: center;
+    .carousel-step {
+      color: #4a6a88;
+      font-size: 0.75rem;
+      letter-spacing: 0.5px;
     }
 
     /* ── Content ── */
@@ -315,12 +329,15 @@
 
 <div class="carousel-nav">
   <button class="carousel-arrow" id="prev-btn" onclick="carouselPrev()" disabled>&#8592;</button>
-  <div class="carousel-indicators">
-    <span class="carousel-dot active" onclick="carouselGo(0)"></span>
-    <span class="carousel-dot" onclick="carouselGo(1)"></span>
-    <span class="carousel-dot" onclick="carouselGo(2)"></span>
+  <div class="carousel-track">
+    <span class="carousel-label" id="carousel-label">Key Learnings and Takeaways</span>
+    <div class="carousel-indicators">
+      <span class="carousel-dot active" onclick="carouselGo(0)"></span>
+      <span class="carousel-dot" onclick="carouselGo(1)"></span>
+      <span class="carousel-dot" onclick="carouselGo(2)"></span>
+    </div>
+    <span class="carousel-step" id="carousel-step">1 of 3</span>
   </div>
-  <span class="carousel-label" id="carousel-label">Key Learnings and Takeaways</span>
   <button class="carousel-arrow" id="next-btn" onclick="carouselNext()">&#8594;</button>
 </div>
 
@@ -471,7 +488,33 @@
 <div id="telstra" class="tab-content">
 
   <div class="card">
-    <h2>Overview</h2>
+    <h2>Background</h2>
+    <p style="font-size:0.93rem; color:#3a5068; line-height:1.8;">
+      Telstra is a stagnant account for Pega. They operate on a self-managed cloud with their own COE team and run on a subscription model with no significant rise in case usage.
+    </p>
+    <p style="font-size:0.93rem; color:#3a5068; line-height:1.8; margin-top:10px;">
+      <strong style="color:#1b3a5c;">Tushar Mehta</strong>, Pega CE, who joined towards the end of last year, wanted to drive a spike in case-based licensing revenue. He met with <strong style="color:#1b3a5c;">Vineet Mehta</strong>, Executive, SE &amp; IT | Product &amp; Technology, and asked him to identify the most difficult use case in his area — with the intention of solving it using Pega's case management capabilities. He also wanted Vineet to see the value of Pega not just as a solution for a single use case, but as a design pattern that could be applied across multiple areas within Telstra.
+    </p>
+    <p style="font-size:0.93rem; color:#3a5068; line-height:1.8; margin-top:10px;">
+      Vineet then engaged his broader team, who identified <strong style="color:#1b3a5c;">Device and Care Management</strong> as a problem area. His team of architects made it clear that they only wanted Pega to serve as the case management solution, integrating with microservices in the Telstra enterprise layer to enrich the case. They also highlighted that this case is handled by store agents, whose main frustration is having to click a link in Salesforce that opens a ServiceNow application in a separate tab — making it cumbersome to work across two different systems. If Pega could demonstrate that it can work with the microservices and embed the Pega case within Salesforce Desktop, that would be a significant win.
+    </p>
+    <p style="font-size:0.93rem; color:#3a5068; line-height:1.8; margin-top:10px;">
+      With the support of Tushar's pitch and aligned to key win themes, the official engagement commenced.
+    </p>
+  </div>
+
+  <div class="card">
+    <h2>Walkthrough of Current Application</h2>
+    <div class="video-wrapper">
+      <video controls preload="metadata">
+        <source src="Recordings/slide10_video.mp4" type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Overview of Engagement</h2>
     <ul class="point-list">
       <li><div>Discovery / Walkthrough</div></li>
       <li><div>Blueprint Workshop</div></li>
@@ -602,6 +645,7 @@
     document.getElementById(tabs[idx]).classList.add('active');
     document.querySelectorAll('.carousel-dot')[idx].classList.add('active');
     document.getElementById('carousel-label').textContent = tabLabels[idx];
+    document.getElementById('carousel-step').textContent = (idx + 1) + ' of ' + tabs.length;
     document.getElementById('prev-btn').disabled = idx === 0;
     document.getElementById('next-btn').disabled = idx === tabs.length - 1;
   }
